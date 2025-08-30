@@ -83,6 +83,15 @@ std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
       const MatrixXf& trackers,
       float iou_threshold)
 {
+  // Handle case where there are no detections
+  if (detections.rows() == 0) {
+    // All trackers are unmatched
+    std::vector<int> unmatched_trackers;
+    for (int i = 0; i < trackers.rows(); ++i) {
+      unmatched_trackers.push_back(i);
+    }
+    return {MatrixXf::Zero(0, 2), std::vector<int>(), unmatched_trackers};
+  }
 
   if (trackers.rows() == 0) {
     // No trackers - all detections are unmatched
