@@ -69,12 +69,6 @@ public:
    */
   int getAge() const { return age_; }
 
-  /**
-   * @brief Get total number of detection hits
-   * @return Total detections associated with this tracker
-   */
-  int getHits() const { return hits_; }
-
 private:
   static int count_;  // Global counter for unique IDs
 
@@ -83,11 +77,8 @@ private:
   // Tracker state
   int id_;                    // Unique tracker ID
   int time_since_update_;     // Frames since last update
-  int hits_;                  // Total number of detection hits
   int hit_streak_;            // Current consecutive hit count
   int age_;                   // Total frames since creation
-
-  std::vector<Vector4f> history_;  // History of predicted states
 
   /**
    * @brief Initialize Kalman filter matrices for constant velocity model

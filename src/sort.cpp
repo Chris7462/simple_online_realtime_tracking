@@ -101,7 +101,8 @@ MatrixXf Sort::buildOutputTracks()
 {
   std::vector<VectorXf> output_tracks;
 
-  for (size_t i = 0; i < trackers_.size(); ++i) {
+  //for (size_t i = 0; i < trackers_.size(); ++i) {
+  for (int i = static_cast<int>(trackers_.size()) - 1; i >= 0; --i) {
     auto& tracker = trackers_[i];
 
     // Only return tracks that meet confirmation criteria
@@ -135,4 +136,4 @@ void Sort::reset()
   frame_count_ = 0;
 }
 
-}
+} // namespace sort

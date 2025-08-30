@@ -28,20 +28,20 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
-  Eigen3::Eigen
-  hungarian::hungarian
+    Eigen3::Eigen
+    hungarian::hungarian
 )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 target_compile_options(${PROJECT_NAME} PRIVATE
-  $<$<COMPILE_LANGUAGE:CXX>: -Wall -Wextra -Wpedantic>
+    $<$<COMPILE_LANGUAGE:CXX>: -Wall -Wextra -Wpedantic>
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -104,6 +104,15 @@ install(DIRECTORY include/
 
 #   gtest_discover_tests(test_sort_tracker)
 # endif()
+
+# Main executable for MOT dataset processing
+add_executable(sort_main
+    test/sort_main.cpp
+)
+
+target_link_libraries(sort_main
+    ${PROJECT_NAME}
+)
 
 # Example executable (optional)
 option(BUILD_EXAMPLES "Build example programs" ON)

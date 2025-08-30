@@ -11,7 +11,6 @@ KalmanBoxTracker::KalmanBoxTracker(const Vector4f& bbox)
 : kf_(7, 4), // 7 state variables, 4 measurements
 id_(++count_),
 time_since_update_(0),
-hits_(0),
 hit_streak_(0),
 age_(0)
 {
@@ -63,8 +62,6 @@ void KalmanBoxTracker::initializeKalmanMatrices()
 void KalmanBoxTracker::update(const Vector4f& bbox)
 {
   time_since_update_ = 0;
-  history_.clear();
-  hits_++;
   hit_streak_++;
 
   // Convert bbox to measurement vector
@@ -90,11 +87,8 @@ Vector4f KalmanBoxTracker::predict()
   }
   time_since_update_++;
 
-  // Store prediction in history
-  Vector4f predicted_bbox = convertXToBbox(kf_.getState()).head<4>();
-  history_.push_back(predicted_bbox);
-
-  return predicted_bbox;
+  // Return predicted bounding box directly
+  return convertXToBbox(kf_.getState()).head<4>();
 }
 
 Vector4f KalmanBoxTracker::getState() const
