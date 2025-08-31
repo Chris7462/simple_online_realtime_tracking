@@ -7,11 +7,14 @@
 
 #include <Eigen/Dense>
 
+
 namespace sort
 {
 
 using MatrixXf = Eigen::MatrixXf;
+using MatrixXd = Eigen::MatrixXd;
 using VectorXf = Eigen::VectorXf;
+using VectorXi = Eigen::VectorXi;
 using Vector4f = Eigen::Vector4f;
 
 /**

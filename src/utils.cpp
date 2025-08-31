@@ -1,8 +1,10 @@
-#include "sort/utils.hpp"
-#include "hungarian/hungarian.hpp"
 #include <algorithm>
 #include <vector>
 #include <cmath>
+
+#include "sort/utils.hpp"
+#include "hungarian/hungarian.hpp"
+
 
 namespace sort
 {
@@ -106,11 +108,11 @@ std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
   MatrixXf iou_matrix = computeIouBatch(detections, trackers);
 
   // Convert to Hungarian algorithm format (double precision)
-  Hungarian::MatrixXd iou_matrix_double = iou_matrix.cast<double>();
+  MatrixXd iou_matrix_double = iou_matrix.cast<double>();
 
   // Solve assignment problem (maximize IoU)
-  Hungarian hungarian;
-  Hungarian::VectorXi assignment;
+  hungarian::Hungarian hungarian;
+  VectorXi assignment;
   hungarian.solve(iou_matrix_double, assignment, false); // maximize IoU
 
   // Process assignment results
