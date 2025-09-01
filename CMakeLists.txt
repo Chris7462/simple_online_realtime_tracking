@@ -101,7 +101,8 @@ if(BUILD_TESTING)
   set(test_sources
     test_utils
     test_kalman_filter
-    test_kalman_box_tracker)
+    test_kalman_box_tracker
+    test_sort)
 
   foreach(test_src ${test_sources})
     ament_add_gtest(${test_src} test/${test_src}.cpp)
