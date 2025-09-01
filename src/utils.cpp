@@ -9,7 +9,7 @@
 namespace sort
 {
 
-Vector4f convertBboxToZ(const Vector4f& bbox)
+Vector4f convertBboxToZ(const Vector4f & bbox)
 {
   float w = bbox[2] - bbox[0];
   float h = bbox[3] - bbox[1];
@@ -21,7 +21,7 @@ Vector4f convertBboxToZ(const Vector4f& bbox)
   return Vector4f(x, y, s, r);
 }
 
-VectorXf convertXToBbox(const VectorXf& x, float score)
+VectorXf convertXToBbox(const VectorXf & x, float score)
 {
   float w = std::sqrt(x[2] * x[3]);
   float h = x[2] / w;
@@ -39,7 +39,7 @@ VectorXf convertXToBbox(const VectorXf& x, float score)
   }
 }
 
-MatrixXf computeIouBatch(const MatrixXf& bb_test, const MatrixXf& bb_gt)
+MatrixXf computeIouBatch(const MatrixXf & bb_test, const MatrixXf & bb_gt)
 {
   int num_test = bb_test.rows();
   int num_gt = bb_gt.rows();
@@ -81,8 +81,8 @@ MatrixXf computeIouBatch(const MatrixXf& bb_test, const MatrixXf& bb_gt)
 }
 
 std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
-  associateDetectionsToTrackers(const MatrixXf& detections,
-      const MatrixXf& trackers,
+  associateDetectionsToTrackers(const MatrixXf & detections,
+      const MatrixXf & trackers,
       float iou_threshold)
 {
   // Handle case where there are no detections

@@ -123,7 +123,7 @@ int getMaxFrame(const std::vector<std::vector<float>>& detections) {
 }
 
 // Write tracking results in MOT format
-void writeResults(std::ofstream& out_file, int frame, const Eigen::MatrixXf& tracks) {
+void writeResults(std::ofstream& out_file, int frame, const Eigen::MatrixXf & tracks) {
   for (int i = 0; i < tracks.rows(); ++i) {
     float x1 = tracks(i, 0);
     float y1 = tracks(i, 1);

@@ -61,9 +61,6 @@ install(DIRECTORY include/
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(Eigen3 hungarian) # Build static library, so downstream packages need to find these
 
-# This line might not be needed since headers have already been installed
-# ament_export_include_directories(include)
-
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
@@ -74,6 +71,18 @@ if(BUILD_TESTING)
   # a copyright and license is added to all source files
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+
+  set(test_sources
+    test_utils)
+
+  foreach(test_src ${test_sources})
+    ament_add_gtest(${test_src} test/${test_src}.cpp)
+    target_link_libraries(${test_src}
+      ${PROJECT_NAME}
+      Eigen3::Eigen)
+  endforeach()
 endif()
 
 ament_package()

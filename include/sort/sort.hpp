@@ -37,7 +37,7 @@ public:
    * @return Tracking results where each row is [x1, y1, x2, y2, track_id]
    *         Note: Number of returned tracks may differ from input detections
    */
-  MatrixXf update(const MatrixXf& detections = MatrixXf::Zero(0, 5));
+  MatrixXf update(const MatrixXf & detections = MatrixXf::Zero(0, 5));
 
   /**
    * @brief Get current frame count
@@ -71,7 +71,7 @@ private:
    * @param predicted_tracks Matrix of predicted tracker states
    * @return Indices of trackers to remove
    */
-  std::vector<int> findInvalidTrackers(const MatrixXf& predicted_tracks);
+  std::vector<int> findInvalidTrackers(const MatrixXf & predicted_tracks);
 
   /**
    * @brief Build output matrix from confirmed trackers

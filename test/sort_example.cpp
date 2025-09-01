@@ -6,7 +6,7 @@
 
 using namespace sort;
 
-void printMatrix(const Eigen::MatrixXf& matrix, const std::string& name) {
+void printMatrix(const Eigen::MatrixXf & matrix, const std::string& name) {
   std::cout << name << " (" << matrix.rows() << "x" << matrix.cols() << "):\n";
   if (matrix.rows() == 0) {
     std::cout << "  (empty)\n";

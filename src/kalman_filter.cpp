@@ -28,7 +28,7 @@ void KalmanFilter::predict()
 	P_ = F * P_ * F.transpose() + Q;
 }
 
-void KalmanFilter::update(const VectorXf& z)
+void KalmanFilter::update(const VectorXf & z)
 {
 	// Innovation: y = z - H * x
 	VectorXf y = z - H * x_;

@@ -25,13 +25,13 @@ public:
    * @brief Initialize tracker with initial bounding box
    * @param bbox Initial bounding box in format [x1, y1, x2, y2]
    */
-  explicit KalmanBoxTracker(const Vector4f& bbox);
+  explicit KalmanBoxTracker(const Vector4f & bbox);
 
   /**
    * @brief Update tracker with new detection
    * @param bbox New bounding box observation [x1, y1, x2, y2]
    */
-  void update(const Vector4f& bbox);
+  void update(const Vector4f & bbox);
 
   /**
    * @brief Predict next state and return predicted bounding box

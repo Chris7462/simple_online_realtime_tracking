@@ -13,7 +13,7 @@ Sort::Sort(int max_age, int min_hits, float iou_threshold)
 {
 }
 
-MatrixXf Sort::update(const MatrixXf& detections)
+MatrixXf Sort::update(const MatrixXf & detections)
 {
   frame_count_++;
 
@@ -74,7 +74,7 @@ MatrixXf Sort::update(const MatrixXf& detections)
   return result;
 }
 
-std::vector<int> Sort::findInvalidTrackers(const MatrixXf& predicted_tracks)
+std::vector<int> Sort::findInvalidTrackers(const MatrixXf & predicted_tracks)
 {
   std::vector<int> to_delete;
 
