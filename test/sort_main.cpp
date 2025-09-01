@@ -13,7 +13,8 @@
 namespace fs = std::filesystem;
 using namespace sort;
 
-struct Arguments {
+struct Arguments
+{
   std::string seq_path = "/home/yi-chen/ros2_ws/src/simple_online_realtime_tracking/data";
   std::string phase = "train";
   int max_age = 1;
@@ -22,7 +23,8 @@ struct Arguments {
   bool display = false;
 };
 
-Arguments parseArgs(int argc, char* argv[]) {
+Arguments parseArgs(int argc, char * argv[])
+{
   Arguments args;
 
   for (int i = 1; i < argc; i++) {
@@ -47,7 +49,8 @@ Arguments parseArgs(int argc, char* argv[]) {
 }
 
 // Load detection file in MOT format
-std::vector<std::vector<float>> loadDetections(const std::string& filename) {
+std::vector<std::vector<float>> loadDetections(const std::string & filename)
+{
   std::vector<std::vector<float>> detections;
   std::ifstream file(filename);
 
@@ -64,7 +67,7 @@ std::vector<std::vector<float>> loadDetections(const std::string& filename) {
     while (std::getline(ss, cell, ',')) {
       try {
         row.push_back(std::stof(cell));
-      } catch (const std::exception& e) {
+      } catch (const std::exception & e) {
         // Skip invalid entries
         row.push_back(0.0f);
       }
@@ -79,10 +82,12 @@ std::vector<std::vector<float>> loadDetections(const std::string& filename) {
 }
 
 // Get detections for specific frame
-Eigen::MatrixXf getFrameDetections(const std::vector<std::vector<float>>& all_detections, int frame) {
+Eigen::MatrixXf getFrameDetections(
+  const std::vector<std::vector<float>> & all_detections, int frame)
+{
   std::vector<std::vector<float>> frame_dets;
 
-  for (const auto& det : all_detections) {
+  for (const auto & det : all_detections) {
     if (std::abs(det[0] - frame) < 1e-6) {  // Frame number match (column 0)
       frame_dets.push_back(det);
     }
@@ -96,7 +101,7 @@ Eigen::MatrixXf getFrameDetections(const std::vector<std::vector<float>>& all_de
   Eigen::MatrixXf detections(frame_dets.size(), 5);
 
   for (size_t i = 0; i < frame_dets.size(); ++i) {
-    const auto& det = frame_dets[i];
+    const auto & det = frame_dets[i];
     // MOT format: frame, id, x, y, w, h, conf, ...
     // Convert [x, y, w, h] to [x1, y1, x2, y2]
     float x1 = det[2];
@@ -114,16 +119,18 @@ Eigen::MatrixXf getFrameDetections(const std::vector<std::vector<float>>& all_de
 }
 
 // Find maximum frame number in detections
-int getMaxFrame(const std::vector<std::vector<float>>& detections) {
+int getMaxFrame(const std::vector<std::vector<float>> & detections)
+{
   int max_frame = 0;
-  for (const auto& det : detections) {
+  for (const auto & det : detections) {
     max_frame = std::max(max_frame, static_cast<int>(det[0]));
   }
   return max_frame;
 }
 
 // Write tracking results in MOT format
-void writeResults(std::ofstream& out_file, int frame, const Eigen::MatrixXf & tracks) {
+void writeResults(std::ofstream & out_file, int frame, const Eigen::MatrixXf & tracks)
+{
   for (int i = 0; i < tracks.rows(); ++i) {
     float x1 = tracks(i, 0);
     float y1 = tracks(i, 1);
@@ -137,13 +144,14 @@ void writeResults(std::ofstream& out_file, int frame, const Eigen::MatrixXf & tr
 
     // MOT output format: frame, id, x, y, w, h, conf, x, y, z
     out_file << frame << "," << track_id << ","
-      << std::fixed << std::setprecision(2)
-      << x1 << "," << y1 << "," << w << "," << h
-      << ",1,-1,-1,-1\n";
+             << std::fixed << std::setprecision(2)
+             << x1 << "," << y1 << "," << w << "," << h
+             << ",1,-1,-1,-1\n";
   }
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char * argv[])
+{
   Arguments args = parseArgs(argc, argv);
 
   std::cout << "SORT C++ Implementation\n";
@@ -165,7 +173,7 @@ int main(int argc, char* argv[]) {
   std::vector<std::string> det_files;
 
   try {
-    for (const auto& seq_dir : fs::directory_iterator(pattern_dir)) {
+    for (const auto & seq_dir : fs::directory_iterator(pattern_dir)) {
       if (seq_dir.is_directory()) {
         std::string det_file = seq_dir.path() / "det" / "det.txt";
         if (fs::exists(det_file)) {
@@ -173,7 +181,7 @@ int main(int argc, char* argv[]) {
         }
       }
     }
-  } catch (const fs::filesystem_error& e) {
+  } catch (const fs::filesystem_error & e) {
     std::cerr << "Error accessing directory: " << e.what() << "\n";
     return 1;
   }
@@ -190,7 +198,7 @@ int main(int argc, char* argv[]) {
   int total_frames = 0;
 
   // Process each sequence
-  for (const std::string& seq_det_file : det_files) {
+  for (const std::string & seq_det_file : det_files) {
     std::cout << "Processing " << seq_det_file << "\n";
 
     // Create SORT tracker instance
@@ -200,7 +208,7 @@ int main(int argc, char* argv[]) {
     std::vector<std::vector<float>> seq_dets;
     try {
       seq_dets = loadDetections(seq_det_file);
-    } catch (const std::exception& e) {
+    } catch (const std::exception & e) {
       std::cerr << "Error loading " << seq_det_file << ": " << e.what() << "\n";
       continue;
     }
@@ -249,7 +257,7 @@ int main(int argc, char* argv[]) {
   // Print timing statistics
   std::cout << "\n=== Performance Statistics ===\n";
   std::cout << "Total Tracking took: " << std::fixed << std::setprecision(3)
-    << total_time << " seconds for " << total_frames << " frames\n";
+            << total_time << " seconds for " << total_frames << " frames\n";
 
   if (total_frames > 0) {
     double fps = total_frames / total_time;

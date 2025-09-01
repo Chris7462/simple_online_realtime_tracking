@@ -49,25 +49,25 @@ public:
    * @brief Get unique tracker ID
    * @return Tracker ID (starts from 1)
    */
-  int getId() const { return id_; }
+  int getId() const;
 
   /**
    * @brief Get number of frames since last update
    * @return Frames since last detection association
    */
-  int getTimeSinceUpdate() const { return time_since_update_; }
+  int getTimeSinceUpdate() const;
 
   /**
    * @brief Get current hit streak (consecutive detections)
    * @return Number of consecutive frames with detections
    */
-  int getHitStreak() const { return hit_streak_; }
+  int getHitStreak() const;
 
   /**
    * @brief Get total age of tracker
    * @return Total number of frames tracker has existed
    */
-  int getAge() const { return age_; }
+  int getAge() const;
 
 private:
   static int count_;  // Global counter for unique IDs

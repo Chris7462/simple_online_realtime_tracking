@@ -9,10 +9,10 @@ int KalmanBoxTracker::count_ = 0;
 
 KalmanBoxTracker::KalmanBoxTracker(const Vector4f & bbox)
 : kf_(7, 4), // 7 state variables, 4 measurements
-id_(++count_),
-time_since_update_(0),
-hit_streak_(0),
-age_(0)
+  id_(++count_),
+  time_since_update_(0),
+  hit_streak_(0),
+  age_(0)
 {
 
   initializeKalmanMatrices();
@@ -29,12 +29,12 @@ void KalmanBoxTracker::initializeKalmanMatrices()
   // State transition matrix F (constant velocity model)
   // State: [x, y, s, r, dx, dy, ds]
   kf_.F << 1, 0, 0, 0, 1, 0, 0,  // x = x + dx
-  0, 1, 0, 0, 0, 1, 0,  // y = y + dy
-  0, 0, 1, 0, 0, 0, 1,  // s = s + ds
-  0, 0, 0, 1, 0, 0, 0,  // r = r (constant aspect ratio)
-  0, 0, 0, 0, 1, 0, 0,  // dx = dx (constant velocity)
-  0, 0, 0, 0, 0, 1, 0,  // dy = dy (constant velocity)
-  0, 0, 0, 0, 0, 0, 1;  // ds = ds (constant scale velocity)
+    0, 1, 0, 0, 0, 1, 0,  // y = y + dy
+    0, 0, 1, 0, 0, 0, 1,  // s = s + ds
+    0, 0, 0, 1, 0, 0, 0,  // r = r (constant aspect ratio)
+    0, 0, 0, 0, 1, 0, 0,  // dx = dx (constant velocity)
+    0, 0, 0, 0, 0, 1, 0,  // dy = dy (constant velocity)
+    0, 0, 0, 0, 0, 0, 1;  // ds = ds (constant scale velocity)
 
   // Observation matrix H (observe position, scale, aspect ratio)
   kf_.H << 1, 0, 0, 0, 0, 0, 0,  // observe x
@@ -94,6 +94,26 @@ Vector4f KalmanBoxTracker::predict()
 Vector4f KalmanBoxTracker::getState() const
 {
   return convertXToBbox(kf_.getState()).head<4>();
+}
+
+int KalmanBoxTracker::getId() const
+{
+  return id_;
+}
+
+int KalmanBoxTracker::getTimeSinceUpdate() const
+{
+  return time_since_update_;
+}
+
+int KalmanBoxTracker::getHitStreak() const
+{
+  return hit_streak_;
+}
+
+int KalmanBoxTracker::getAge() const
+{
+  return age_;
 }
 
 } // namespace sort

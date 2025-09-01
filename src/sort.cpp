@@ -74,6 +74,16 @@ MatrixXf Sort::update(const MatrixXf & detections)
   return result;
 }
 
+int Sort::getFrameCount() const
+{
+  return frame_count_;
+}
+
+size_t Sort::getTrackerCount() const
+{
+  return trackers_.size();
+}
+
 std::vector<int> Sort::findInvalidTrackers(const MatrixXf & predicted_tracks)
 {
   std::vector<int> to_delete;
@@ -103,7 +113,7 @@ MatrixXf Sort::buildOutputTracks()
 
   //for (size_t i = 0; i < trackers_.size(); ++i) {
   for (int i = static_cast<int>(trackers_.size()) - 1; i >= 0; --i) {
-    auto& tracker = trackers_[i];
+    auto & tracker = trackers_[i];
 
     // Only return tracks that meet confirmation criteria
     bool is_confirmed = (tracker->getTimeSinceUpdate() < 1) &&

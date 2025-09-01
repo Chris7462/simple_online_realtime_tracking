@@ -53,9 +53,7 @@ MatrixXf computeIouBatch(const MatrixXf & bb_test, const MatrixXf & bb_gt);
  *         unmatched_detections: vector of detection indices
  *         unmatched_trackers: vector of tracker indices
  */
-std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
-  associateDetectionsToTrackers(const MatrixXf & detections,
-      const MatrixXf & trackers,
-      float iou_threshold = 0.3f);
+std::tuple<MatrixXf, std::vector<int>, std::vector<int>> associateDetectionsToTrackers(
+  const MatrixXf & detections, const MatrixXf & trackers, float iou_threshold = 0.3f);
 
 } // namespace sort

@@ -29,12 +29,12 @@ VectorXf convertXToBbox(const VectorXf & x, float score)
   if (score < 0.0f) {
     // Return 4-element bbox
     VectorXf result(4);
-    result << x[0] - w/2.0f, x[1] - h/2.0f, x[0] + w/2.0f, x[1] + h/2.0f;
+    result << x[0] - w / 2.0f, x[1] - h / 2.0f, x[0] + w / 2.0f, x[1] + h / 2.0f;
     return result;
   } else {
     // Return 5-element bbox with score
     VectorXf result(5);
-    result << x[0] - w/2.0f, x[1] - h/2.0f, x[0] + w/2.0f, x[1] + h/2.0f, score;
+    result << x[0] - w / 2.0f, x[1] - h / 2.0f, x[0] + w / 2.0f, x[1] + h / 2.0f, score;
     return result;
   }
 }
@@ -80,10 +80,8 @@ MatrixXf computeIouBatch(const MatrixXf & bb_test, const MatrixXf & bb_gt)
   return iou_matrix;
 }
 
-std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
-  associateDetectionsToTrackers(const MatrixXf & detections,
-      const MatrixXf & trackers,
-      float iou_threshold)
+std::tuple<MatrixXf, std::vector<int>, std::vector<int>> associateDetectionsToTrackers(
+  const MatrixXf & detections, const MatrixXf & trackers, float iou_threshold)
 {
   // Handle case where there are no detections
   if (detections.rows() == 0) {
@@ -137,7 +135,7 @@ std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
 
   // Find unmatched trackers
   std::vector<bool> tracker_matched(trackers.rows(), false);
-  for (const auto& pair : matched_pairs) {
+  for (const auto & pair : matched_pairs) {
     tracker_matched[pair.second] = true;
   }
 

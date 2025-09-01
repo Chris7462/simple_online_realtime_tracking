@@ -39,19 +39,19 @@ public:
    * @brief Get current state estimate
    * @return Current state vector
    */
-  const VectorXf & getState() const { return x_; }
+  const VectorXf & getState() const;
 
   /**
    * @brief Set state vector
    * @param x New state vector
    */
-  void setState(const VectorXf & x) { x_ = x; }
+  void setState(const VectorXf & x);
 
   /**
    * @brief Get state covariance matrix
    * @return Current covariance matrix
    */
-  const MatrixXf & getCovariance() const { return P_; }
+  const MatrixXf & getCovariance() const;
 
   // Public access to system matrices for configuration
   MatrixXf F;  // State transition matrix

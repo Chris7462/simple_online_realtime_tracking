@@ -43,13 +43,13 @@ public:
    * @brief Get current frame count
    * @return Number of frames processed
    */
-  int getFrameCount() const { return frame_count_; }
+  int getFrameCount() const;
 
   /**
    * @brief Get number of active trackers
    * @return Current number of trackers
    */
-  size_t getTrackerCount() const { return trackers_.size(); }
+  size_t getTrackerCount() const;
 
   /**
    * @brief Reset tracker state (clear all trackers)
