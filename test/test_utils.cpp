@@ -10,7 +10,7 @@
 #include <gtest/gtest.h>
 
 // Local includes
-#include "sort/utils.hpp"
+#include "sort_backend/utils.hpp"
 
 
 using namespace Eigen;
