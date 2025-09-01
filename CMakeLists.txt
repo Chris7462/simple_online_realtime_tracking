@@ -99,7 +99,8 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
 
   set(test_sources
-    test_utils)
+    test_utils
+    test_kalman_filter)
 
   foreach(test_src ${test_sources})
     ament_add_gtest(${test_src} test/${test_src}.cpp)

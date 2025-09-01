@@ -273,7 +273,7 @@ int main(int argc, char * argv[])
       // Load and display image if display mode is enabled
       if (args.display) {
         std::string img_path = "MOT15/" + args.phase + "/" + seq_name + "/img1/" +
-                              std::to_string(frame).insert(0, 6 - std::to_string(frame).length(), '0') + ".jpg";
+          std::to_string(frame).insert(0, 6 - std::to_string(frame).length(), '0') + ".jpg";
 
         display_img = cv::imread(img_path);
         if (display_img.empty()) {
