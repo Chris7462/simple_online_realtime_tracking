@@ -61,6 +61,30 @@ install(DIRECTORY include/
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(Eigen3 hungarian) # Build static library, so downstream packages need to find these
 
+# Build example
+if(BUILD_EXAMPLE)
+  find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs highgui)
+
+  add_executable(sort_main example/sort_main.cpp)
+
+  target_link_libraries(sort_main
+    PRIVATE
+      ${PROJECT_NAME}
+      Eigen3::Eigen
+      ${OpenCV_LIBS})
+
+  target_include_directories(sort_main
+    PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/include
+      ${OpenCV_INCLUDE_DIRS})
+
+  target_compile_features(sort_main PRIVATE cxx_std_17)
+
+  target_compile_options(sort_main PRIVATE
+      $<$<COMPILE_LANGUAGE:CXX>: -Wall -Wextra -Wpedantic>
+  )
+endif()
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights

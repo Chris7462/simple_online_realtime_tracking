@@ -8,6 +8,9 @@
 #include <iomanip>
 #include <algorithm>
 #include <cmath>
+#include <random>
+
+#include <opencv2/opencv.hpp>
 
 #include "sort_backend/sort.hpp"
 
@@ -17,7 +20,7 @@ using namespace sort;
 
 struct Arguments
 {
-  std::string seq_path = "/home/yi-chen/ros2_ws/src/sort_backend/data";
+  std::string seq_path = "/data/MOT15";
   std::string phase = "train";
   int max_age = 1;
   int min_hits = 3;
@@ -48,6 +51,24 @@ Arguments parseArgs(int argc, char * argv[])
   }
 
   return args;
+}
+
+// Generate random colors for visualization (equivalent to Python's np.random.rand(32, 3))
+std::vector<cv::Scalar> generateColors(int num_colors = 32)
+{
+  std::vector<cv::Scalar> colors;
+  std::mt19937 gen(0);  // Same seed as Python for consistency
+  std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+
+  for (int i = 0; i < num_colors; ++i) {
+    float r = dis(gen);
+    float g = dis(gen);
+    float b = dis(gen);
+    // Convert to BGR format for OpenCV (0-255 range)
+    colors.push_back(cv::Scalar(b * 255, g * 255, r * 255));
+  }
+
+  return colors;
 }
 
 // Load detection file in MOT format
@@ -165,6 +186,9 @@ int main(int argc, char * argv[])
   std::cout << "  iou_threshold: " << args.iou_threshold << "\n";
   std::cout << "  display: " << (args.display ? "true" : "false") << "\n\n";
 
+  // Generate colors for visualization
+  std::vector<cv::Scalar> colors = generateColors(32);
+
   // Create output directory
   if (!fs::exists("output")) {
     fs::create_directories("output");
@@ -231,12 +255,33 @@ int main(int argc, char * argv[])
     // Get maximum frame number
     int max_frame = getMaxFrame(seq_dets);
 
+    // Initialize OpenCV window if display is enabled
+    cv::Mat display_img;
+    std::string window_name;
+    if (args.display) {
+      window_name = seq_name + " Tracked Targets";
+      cv::namedWindow(window_name, cv::WINDOW_AUTOSIZE);
+    }
+
     // Process each frame
     for (int frame = 1; frame <= max_frame; ++frame) {
       // Get detections for this frame
       Eigen::MatrixXf dets = getFrameDetections(seq_dets, frame);
 
       total_frames++;
+
+      // Load and display image if display mode is enabled
+      if (args.display) {
+        std::string img_path = "MOT15/" + args.phase + "/" + seq_name + "/img1/" +
+                              std::to_string(frame).insert(0, 6 - std::to_string(frame).length(), '0') + ".jpg";
+
+        display_img = cv::imread(img_path);
+        if (display_img.empty()) {
+          std::cerr << "Warning: Could not load image " << img_path << "\n";
+          // Create a blank image as fallback
+          display_img = cv::Mat::zeros(480, 640, CV_8UC3);
+        }
+      }
 
       // Track timing
       auto start_time = std::chrono::high_resolution_clock::now();
@@ -250,10 +295,52 @@ int main(int argc, char * argv[])
 
       // Write results
       writeResults(out_file, frame, tracks);
+
+      // Draw tracking results if display is enabled
+      if (args.display && !display_img.empty()) {
+        for (int i = 0; i < tracks.rows(); ++i) {
+          int x1 = static_cast<int>(tracks(i, 0));
+          int y1 = static_cast<int>(tracks(i, 1));
+          int x2 = static_cast<int>(tracks(i, 2));
+          int y2 = static_cast<int>(tracks(i, 3));
+          int track_id = static_cast<int>(tracks(i, 4));
+
+          // Get color for this track (cycle through available colors)
+          cv::Scalar color = colors[track_id % 32];
+
+          // Draw bounding box rectangle (thickness=3 to match Python lw=3)
+          cv::rectangle(display_img, cv::Point(x1, y1), cv::Point(x2, y2), color, 3);
+
+          // Optionally draw track ID
+          std::string id_text = std::to_string(track_id);
+          cv::putText(display_img, id_text, cv::Point(x1, y1 - 5),
+                     cv::FONT_HERSHEY_SIMPLEX, 0.7, color, 2);
+        }
+
+        // Display the image
+        cv::imshow(window_name, display_img);
+
+        // Wait for a short time to control display speed (1ms)
+        // Press 'q' to quit or any other key to continue
+        char key = cv::waitKey(1) & 0xFF;
+        if (key == 'q' || key == 27) { // 'q' or ESC to quit
+          break;
+        }
+      }
     }
 
     out_file.close();
     std::cout << "  Output written to: " << output_file << "\n";
+
+    // Close OpenCV window for this sequence
+    if (args.display) {
+      cv::destroyWindow(window_name);
+    }
+  }
+
+  // Clean up OpenCV windows
+  if (args.display) {
+    cv::destroyAllWindows();
   }
 
   // Print timing statistics
