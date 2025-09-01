@@ -1,5 +1,5 @@
-#include "sort/kalman_box_tracker.hpp"
-#include "sort/utils.hpp"
+#include "sort_backend/kalman_box_tracker.hpp"
+#include "sort_backend/utils.hpp"
 
 
 namespace sort
@@ -7,12 +7,12 @@ namespace sort
 
 int KalmanBoxTracker::count_ = 0;
 
-KalmanBoxTracker::KalmanBoxTracker(const Vector4f& bbox)
+KalmanBoxTracker::KalmanBoxTracker(const Vector4f & bbox)
 : kf_(7, 4), // 7 state variables, 4 measurements
-id_(++count_),
-time_since_update_(0),
-hit_streak_(0),
-age_(0)
+  id_(++count_),
+  time_since_update_(0),
+  hit_streak_(0),
+  age_(0)
 {
 
   initializeKalmanMatrices();
@@ -29,12 +29,12 @@ void KalmanBoxTracker::initializeKalmanMatrices()
   // State transition matrix F (constant velocity model)
   // State: [x, y, s, r, dx, dy, ds]
   kf_.F << 1, 0, 0, 0, 1, 0, 0,  // x = x + dx
-  0, 1, 0, 0, 0, 1, 0,  // y = y + dy
-  0, 0, 1, 0, 0, 0, 1,  // s = s + ds
-  0, 0, 0, 1, 0, 0, 0,  // r = r (constant aspect ratio)
-  0, 0, 0, 0, 1, 0, 0,  // dx = dx (constant velocity)
-  0, 0, 0, 0, 0, 1, 0,  // dy = dy (constant velocity)
-  0, 0, 0, 0, 0, 0, 1;  // ds = ds (constant scale velocity)
+    0, 1, 0, 0, 0, 1, 0,  // y = y + dy
+    0, 0, 1, 0, 0, 0, 1,  // s = s + ds
+    0, 0, 0, 1, 0, 0, 0,  // r = r (constant aspect ratio)
+    0, 0, 0, 0, 1, 0, 0,  // dx = dx (constant velocity)
+    0, 0, 0, 0, 0, 1, 0,  // dy = dy (constant velocity)
+    0, 0, 0, 0, 0, 0, 1;  // ds = ds (constant scale velocity)
 
   // Observation matrix H (observe position, scale, aspect ratio)
   kf_.H << 1, 0, 0, 0, 0, 0, 0,  // observe x
@@ -53,13 +53,13 @@ void KalmanBoxTracker::initializeKalmanMatrices()
   kf_.Q.block<3, 3>(4, 4) *= 0.01f;  // Lower process noise for velocities
 
   // Initial state covariance P
-  Eigen::MatrixXf& P = const_cast<Eigen::MatrixXf&>(kf_.getCovariance());
+  Eigen::MatrixXf & P = const_cast<Eigen::MatrixXf &>(kf_.getCovariance());
   P = Eigen::MatrixXf::Identity(7, 7);
   P.block<3, 3>(4, 4) *= 1000.0f;  // High uncertainty for initial velocities
   P *= 10.0f;  // Overall higher initial uncertainty
 }
 
-void KalmanBoxTracker::update(const Vector4f& bbox)
+void KalmanBoxTracker::update(const Vector4f & bbox)
 {
   time_since_update_ = 0;
   hit_streak_++;
@@ -94,6 +94,26 @@ Vector4f KalmanBoxTracker::predict()
 Vector4f KalmanBoxTracker::getState() const
 {
   return convertXToBbox(kf_.getState()).head<4>();
+}
+
+int KalmanBoxTracker::getId() const
+{
+  return id_;
+}
+
+int KalmanBoxTracker::getTimeSinceUpdate() const
+{
+  return time_since_update_;
+}
+
+int KalmanBoxTracker::getHitStreak() const
+{
+  return hit_streak_;
+}
+
+int KalmanBoxTracker::getAge() const
+{
+  return age_;
 }
 
 } // namespace sort

@@ -7,11 +7,14 @@
 
 #include <Eigen/Dense>
 
+
 namespace sort
 {
 
 using MatrixXf = Eigen::MatrixXf;
+using MatrixXd = Eigen::MatrixXd;
 using VectorXf = Eigen::VectorXf;
+using VectorXi = Eigen::VectorXi;
 using Vector4f = Eigen::Vector4f;
 
 /**
@@ -22,7 +25,7 @@ using Vector4f = Eigen::Vector4f;
  *         s = scale (area)
  *         r = aspect ratio (width/height)
  */
-Vector4f convertBboxToZ(const Vector4f& bbox);
+Vector4f convertBboxToZ(const Vector4f & bbox);
 
 /**
  * @brief Convert from [x,y,s,r] format back to [x1,y1,x2,y2] bounding box
@@ -30,7 +33,7 @@ Vector4f convertBboxToZ(const Vector4f& bbox);
  * @param score Optional confidence score to append
  * @return Bounding box in format [x1, y1, x2, y2] or [x1, y1, x2, y2, score]
  */
-VectorXf convertXToBbox(const VectorXf& x, float score = -1.0f);
+VectorXf convertXToBbox(const VectorXf & x, float score = -1.0f);
 
 /**
  * @brief Compute IoU (Intersection over Union) between detection and tracker bboxes
@@ -38,7 +41,7 @@ VectorXf convertXToBbox(const VectorXf& x, float score = -1.0f);
  * @param bb_gt Tracker bounding boxes, each row is [x1, y1, x2, y2]
  * @return IoU matrix where element (i,j) is IoU between detection i and tracker j
  */
-MatrixXf computeIouBatch(const MatrixXf& bb_test, const MatrixXf& bb_gt);
+MatrixXf computeIouBatch(const MatrixXf & bb_test, const MatrixXf & bb_gt);
 
 /**
  * @brief Associate detections to trackers using IoU and Hungarian algorithm
@@ -50,9 +53,7 @@ MatrixXf computeIouBatch(const MatrixXf& bb_test, const MatrixXf& bb_gt);
  *         unmatched_detections: vector of detection indices
  *         unmatched_trackers: vector of tracker indices
  */
-std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
-  associateDetectionsToTrackers(const MatrixXf& detections,
-      const MatrixXf& trackers,
-      float iou_threshold = 0.3f);
+std::tuple<MatrixXf, std::vector<int>, std::vector<int>> associateDetectionsToTrackers(
+  const MatrixXf & detections, const MatrixXf & trackers, float iou_threshold = 0.3f);
 
 } // namespace sort

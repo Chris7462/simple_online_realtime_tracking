@@ -9,7 +9,7 @@
 #include <Eigen/Dense>
 #include <vector>
 
-#include "sort/kalman_filter.hpp"
+#include "sort_backend/kalman_filter.hpp"
 
 
 namespace sort
@@ -25,13 +25,13 @@ public:
    * @brief Initialize tracker with initial bounding box
    * @param bbox Initial bounding box in format [x1, y1, x2, y2]
    */
-  explicit KalmanBoxTracker(const Vector4f& bbox);
+  explicit KalmanBoxTracker(const Vector4f & bbox);
 
   /**
    * @brief Update tracker with new detection
    * @param bbox New bounding box observation [x1, y1, x2, y2]
    */
-  void update(const Vector4f& bbox);
+  void update(const Vector4f & bbox);
 
   /**
    * @brief Predict next state and return predicted bounding box
@@ -49,25 +49,25 @@ public:
    * @brief Get unique tracker ID
    * @return Tracker ID (starts from 1)
    */
-  int getId() const { return id_; }
+  int getId() const;
 
   /**
    * @brief Get number of frames since last update
    * @return Frames since last detection association
    */
-  int getTimeSinceUpdate() const { return time_since_update_; }
+  int getTimeSinceUpdate() const;
 
   /**
    * @brief Get current hit streak (consecutive detections)
    * @return Number of consecutive frames with detections
    */
-  int getHitStreak() const { return hit_streak_; }
+  int getHitStreak() const;
 
   /**
    * @brief Get total age of tracker
    * @return Total number of frames tracker has existed
    */
-  int getAge() const { return age_; }
+  int getAge() const;
 
 private:
   static int count_;  // Global counter for unique IDs

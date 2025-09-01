@@ -10,7 +10,7 @@
 #include <vector>
 #include <memory>
 
-#include "sort/kalman_box_tracker.hpp"
+#include "sort_backend/kalman_box_tracker.hpp"
 
 
 namespace sort
@@ -37,19 +37,19 @@ public:
    * @return Tracking results where each row is [x1, y1, x2, y2, track_id]
    *         Note: Number of returned tracks may differ from input detections
    */
-  MatrixXf update(const MatrixXf& detections = MatrixXf::Zero(0, 5));
+  MatrixXf update(const MatrixXf & detections = MatrixXf::Zero(0, 5));
 
   /**
    * @brief Get current frame count
    * @return Number of frames processed
    */
-  int getFrameCount() const { return frame_count_; }
+  int getFrameCount() const;
 
   /**
    * @brief Get number of active trackers
    * @return Current number of trackers
    */
-  size_t getTrackerCount() const { return trackers_.size(); }
+  size_t getTrackerCount() const;
 
   /**
    * @brief Reset tracker state (clear all trackers)
@@ -71,7 +71,7 @@ private:
    * @param predicted_tracks Matrix of predicted tracker states
    * @return Indices of trackers to remove
    */
-  std::vector<int> findInvalidTrackers(const MatrixXf& predicted_tracks);
+  std::vector<int> findInvalidTrackers(const MatrixXf & predicted_tracks);
 
   /**
    * @brief Build output matrix from confirmed trackers

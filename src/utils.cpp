@@ -1,13 +1,15 @@
-#include "sort/utils.hpp"
-#include "hungarian/hungarian.hpp"
 #include <algorithm>
 #include <vector>
 #include <cmath>
 
+#include "sort_backend/utils.hpp"
+#include "hungarian/hungarian.hpp"
+
+
 namespace sort
 {
 
-Vector4f convertBboxToZ(const Vector4f& bbox)
+Vector4f convertBboxToZ(const Vector4f & bbox)
 {
   float w = bbox[2] - bbox[0];
   float h = bbox[3] - bbox[1];
@@ -19,7 +21,7 @@ Vector4f convertBboxToZ(const Vector4f& bbox)
   return Vector4f(x, y, s, r);
 }
 
-VectorXf convertXToBbox(const VectorXf& x, float score)
+VectorXf convertXToBbox(const VectorXf & x, float score)
 {
   float w = std::sqrt(x[2] * x[3]);
   float h = x[2] / w;
@@ -27,17 +29,17 @@ VectorXf convertXToBbox(const VectorXf& x, float score)
   if (score < 0.0f) {
     // Return 4-element bbox
     VectorXf result(4);
-    result << x[0] - w/2.0f, x[1] - h/2.0f, x[0] + w/2.0f, x[1] + h/2.0f;
+    result << x[0] - w / 2.0f, x[1] - h / 2.0f, x[0] + w / 2.0f, x[1] + h / 2.0f;
     return result;
   } else {
     // Return 5-element bbox with score
     VectorXf result(5);
-    result << x[0] - w/2.0f, x[1] - h/2.0f, x[0] + w/2.0f, x[1] + h/2.0f, score;
+    result << x[0] - w / 2.0f, x[1] - h / 2.0f, x[0] + w / 2.0f, x[1] + h / 2.0f, score;
     return result;
   }
 }
 
-MatrixXf computeIouBatch(const MatrixXf& bb_test, const MatrixXf& bb_gt)
+MatrixXf computeIouBatch(const MatrixXf & bb_test, const MatrixXf & bb_gt)
 {
   int num_test = bb_test.rows();
   int num_gt = bb_gt.rows();
@@ -78,10 +80,8 @@ MatrixXf computeIouBatch(const MatrixXf& bb_test, const MatrixXf& bb_gt)
   return iou_matrix;
 }
 
-std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
-  associateDetectionsToTrackers(const MatrixXf& detections,
-      const MatrixXf& trackers,
-      float iou_threshold)
+std::tuple<MatrixXf, std::vector<int>, std::vector<int>> associateDetectionsToTrackers(
+  const MatrixXf & detections, const MatrixXf & trackers, float iou_threshold)
 {
   // Handle case where there are no detections
   if (detections.rows() == 0) {
@@ -106,11 +106,11 @@ std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
   MatrixXf iou_matrix = computeIouBatch(detections, trackers);
 
   // Convert to Hungarian algorithm format (double precision)
-  Hungarian::MatrixXd iou_matrix_double = iou_matrix.cast<double>();
+  MatrixXd iou_matrix_double = iou_matrix.cast<double>();
 
   // Solve assignment problem (maximize IoU)
-  Hungarian hungarian;
-  Hungarian::VectorXi assignment;
+  hungarian::Hungarian hungarian;
+  VectorXi assignment;
   hungarian.solve(iou_matrix_double, assignment, false); // maximize IoU
 
   // Process assignment results
@@ -135,7 +135,7 @@ std::tuple<MatrixXf, std::vector<int>, std::vector<int>>
 
   // Find unmatched trackers
   std::vector<bool> tracker_matched(trackers.rows(), false);
-  for (const auto& pair : matched_pairs) {
+  for (const auto & pair : matched_pairs) {
     tracker_matched[pair.second] = true;
   }
 
