@@ -22,7 +22,7 @@ add_library(${PROJECT_NAME} STATIC
   src/kalman_filter.cpp
   src/kalman_box_tracker.cpp
   src/utils.cpp
-  src/sort.cpp)
+  src/sort_backend.cpp)
 
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
@@ -102,7 +102,7 @@ if(BUILD_TESTING)
     test_utils
     test_kalman_filter
     test_kalman_box_tracker
-    test_sort)
+    test_sort_backend)
 
   foreach(test_src ${test_sources})
     ament_add_gtest(${test_src} test/${test_src}.cpp)
